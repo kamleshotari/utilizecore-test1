@@ -3,7 +3,7 @@ class ParcelsController < ApplicationController
 
   # GET /parcels or /parcels.json
   def index
-    @parcels = Parcel.all
+    @parcels = Parcel.includes(:sender, :receiver, :service_type)
   end
 
   # GET /parcels/1 or /parcels/1.json
@@ -13,14 +13,14 @@ class ParcelsController < ApplicationController
   # GET /parcels/new
   def new
     @parcel = Parcel.new
-    @users = User.all.map{|user| [user.name_with_address, user.id]}
-    @service_types = ServiceType.all.map{|service_type| [service_type.name, service_type.id]}
+    @users = get_user_list
+    @service_types = get_service_types
   end
 
   # GET /parcels/1/edit
   def edit
-    @users = User.all.map{|user| [user.name_with_address, user.id]}
-    @service_types = ServiceType.all.map{|service_type| [service_type.name, service_type.id]}
+    @users = get_user_list
+    @service_types = get_service_types
   end
 
   # POST /parcels or /parcels.json
@@ -33,8 +33,8 @@ class ParcelsController < ApplicationController
         format.json { render :show, status: :created, location: @parcel }
       else
         format.html do
-          @users = User.all.map{|user| [user.name_with_address, user.id]}
-          @service_types = ServiceType.all.map{|service_type| [service_type.name, service_type.id]} 
+          @users = get_user_list
+          @service_types = get_service_types 
           render :new, status: :unprocessable_entity
         end
         format.json { render json: @parcel.errors, status: :unprocessable_entity }
@@ -66,6 +66,15 @@ class ParcelsController < ApplicationController
 
   private
     # Use callbacks to share common setup or constraints between actions.
+
+    def get_user_list
+      User.includes(:address).map{|user| [user.name_with_address, user.id]}
+    end
+
+    def get_service_types
+      ServiceType.pluck(:name, :id)
+    end
+
     def set_parcel
       @parcel = Parcel.find(params[:id])
     end

@@ -1,7 +1,10 @@
 class User < ApplicationRecord
 	validates :name, presence: true
+	validates :email, presence: true,
+	          format: { with: URI::MailTo::EMAIL_REGEXP },
+			  uniqueness: { case_sensitive: false } 
 
-	has_one :address
+	has_one :address, dependent: :destroy
 	has_many :send_parcels, foreign_key: :sender_id, class_name: 'Parcel'
 	has_many :received_parcels, foreign_key: :receiver_id, class_name: 'Parcel'
 

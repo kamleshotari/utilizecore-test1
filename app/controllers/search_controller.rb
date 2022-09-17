@@ -1,7 +1,7 @@
 class SearchController < ApplicationController
   def index
     if params[:search].present?
-      @parcels = Parcel.where(id: params[:search])
+      @parcels = Parcel.where(guid: params[:search])
     else
       @parcels = []
     end

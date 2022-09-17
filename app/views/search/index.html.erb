@@ -12,7 +12,7 @@
 <table>
   <thead>
     <tr>
-      <th>ID</th>
+      <th>Order ID</th>
       <th>Status</th>
     </tr>
   </thead>
@@ -20,7 +20,7 @@
   <tbody>
     <% @parcels.each do |parcel| %>
       <tr>
-        <td><%= parcel.id %></td>
+        <td><%= parcel.guid %></td>
         <td><%= parcel.status %></td>
       </tr>
     <% end %>
