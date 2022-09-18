@@ -1,9 +1,14 @@
 class ParcelsController < ApplicationController
+  before_action :authenticate_admin!, only: %i[edit update destroy]
   before_action :set_parcel, only: %i[ show edit update destroy ]
 
   # GET /parcels or /parcels.json
   def index
-    @parcels = Parcel.includes(:sender, :receiver, :service_type)
+    if current_user.is_admin?
+      @parcels = Parcel.includes(:sender, :receiver, :service_type)
+    else
+      @parcels = Parcel.includes(:sender, :receiver, :service_type).where(sender_id: current_user.id)
+    end
   end
 
   # GET /parcels/1 or /parcels/1.json

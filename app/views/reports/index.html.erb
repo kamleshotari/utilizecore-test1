@@ -1,0 +1,26 @@
+<p id="notice"><%= notice %></p>
+
+<h1>List Reports</h1>
+
+<br /><br />
+
+<table>
+    <thead>
+    <tr>
+        <th>ID</th>
+        <th>Report</th>
+    </tr>
+    </thead>
+    <% if @reports.present?%>
+        <tbody>
+            <% @reports.each do |r| %>
+            <%if r.file.attached?%>
+                <tr>
+                    <td><%= r.id %></td>
+                    <td><%= link_to r.file.blob.filename, "/reports/download?id=#{r.id}"%></td>
+                </tr>
+            <% end%>
+            <% end %>
+        </tbody>
+    <% end %>
+</table>

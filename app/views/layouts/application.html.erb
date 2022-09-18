@@ -13,11 +13,18 @@
   <body>
 
     <ul>
-      <li><a href="/">Home</a></li>
-      <li><a href="/search">Search Orders</a></li>
-      <li><a href="/parcels">Parcels</a></li>
-      <li><a href="/users">Manage Users</a></li>
-      <li><a href="/service_types">Service Types</a></li>
+      <% if user_signed_in?%>
+        <li><span class="float-right clear">Welcome: <%= current_user.name%></span></li>
+        <li><span class="float-right clear"><%= link_to 'Sign out', destroy_user_session_path, method: :delete %></span></li>
+        <li><a href="/">Home</a></li>
+        <li><a href="/search">Search Orders</a></li>
+        <li><a href="/parcels">Parcels</a></li>
+        <% if current_user.is_admin?%>
+          <li><a href="/users">Manage Users</a></li>
+          <li><a href="/service_types">Service Types</a></li>
+          <li><a href="/reports">Reports</a></li>
+        <% end %>
+      <% end %>
     </ul>
 
     <%= yield %>

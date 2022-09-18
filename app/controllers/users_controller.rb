@@ -1,4 +1,5 @@
 class UsersController < ApplicationController
+  before_action :authenticate_admin!
   before_action :set_user, only: %i[ show edit update destroy ]
 
   # GET /users or /users.json
@@ -21,19 +22,19 @@ class UsersController < ApplicationController
   end
 
   # POST /users or /users.json
-  def create
+  def create_user
     @user = User.new(user_params)
-
+    @user.password = "12345678" if current_user.is_admin?
     respond_to do |format|
       if @user.save
+        UserMailer.with(user: @user, password: "12345678").welcome_mail.deliver_later
         format.html { redirect_to @user, notice: 'User was successfully created.' }
-        format.json { render :show, status: :created, location: @user }
       else
         format.html { render :new, status: :unprocessable_entity }
-        format.json { render json: @user.errors, status: :unprocessable_entity }
       end
     end
   end
+
 
   # PATCH/PUT /users/1 or /users/1.json
   def update
@@ -65,7 +66,7 @@ class UsersController < ApplicationController
 
     # Only allow a list of trusted parameters through.
     def user_params
-      params.require(:user).permit(:name, :email, address_attributes: [:address_line_one, :address_line_two,
+      params.require(:user).permit(:name, :email, :role, :password, :password_confirmation, address_attributes: [:address_line_one, :address_line_two,
                                                                        :city, :state, :country,
                                                                        :pincode, :mobile_number])
     end

@@ -57,3 +57,8 @@ ul {
   margin: 0;
   padding: 0;
 }
+
+.float-right{
+  float: right !important;
+}
+.clear{ clear:both;}
